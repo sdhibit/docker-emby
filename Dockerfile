@@ -47,15 +47,12 @@ ENV LC_ALL          C.UTF-8
 ENV LANG            en_US.UTF-8
 ENV LANGUAGE        en_US.UTF-8
 
-ENV PKG_NAME	    MediaBrowser
-ENV PKG_VERSION	    3.0.5518.4
-
 # Set Locale
 RUN locale-gen $LANG
 
 # Install MediaBrowser
 RUN mkdir -p /opt/mediabrowser \
-  && wget -O /opt/mediabrowser/mediabrowser.zip https://github.com/MediaBrowser/MediaBrowser.Releases/raw/master/Server/${PKG_NAME}-${PKG_VERSION}.zip \
+  && wget -O /opt/mediabrowser/mediabrowser.zip https://github.com/MediaBrowser/MediaBrowser.Releases/raw/master/Server/MediaBrowser.Mono.zip \
   && unzip /opt/mediabrowser/mediabrowser.zip -d /opt/mediabrowser \
   && chown -R nobody:users /opt/mediabrowser \
   && chmod -R 755 /opt/mediabrowser \
