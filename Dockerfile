@@ -72,5 +72,5 @@ EXPOSE 1900/udp
 VOLUME /config
 
 # Use baseimage-docker's init system
-# CMD ["/sbin/my_init"]
+CMD ["/sbin/my_init"]
 
