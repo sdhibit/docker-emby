@@ -46,12 +46,15 @@ ENV LC_ALL          C.UTF-8
 ENV LANG            en_US.UTF-8
 ENV LANGUAGE        en_US.UTF-8
 
+ENV PKG_NAME      MediaBrowser
+ENV PKG_VERSION   3.0.5557.0
+
 # Set Locale
 RUN locale-gen $LANG
 
 # Install Emby
 RUN mkdir -p /opt/emby \
-  && wget -O /opt/emby/emby.zip https://github.com/MediaBrowser/MediaBrowser.Releases/raw/master/Server/MediaBrowser.Mono.zip \
+  && wget -O /opt/emby/emby.zip https://github.com/MediaBrowser/MediaBrowser.Releases/raw/master/Server/${PKG_NAME}-${PKG_VERSION}.zip \
   && unzip /opt/emby/emby.zip -d /opt/emby \
   && chown -R nobody:users /opt/emby \
   && chmod -R 755 /opt/emby \
