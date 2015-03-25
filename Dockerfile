@@ -51,10 +51,13 @@ RUN locale-gen $LANG
 
 # Install Emby
 RUN mkdir -p /opt/emby \
+  && mkdir -p /config \
   && wget -O /opt/emby/emby.zip https://github.com/MediaBrowser/MediaBrowser.Releases/raw/master/Server/MediaBrowser.Mono.zip \
   && unzip /opt/emby/emby.zip -d /opt/emby \
   && chown -R nobody:users /opt/emby \
   && chmod -R 755 /opt/emby \
+  && chown -R nobody:users /config \
+ && chmod -R 755 /config \
   && rm /opt/emby/emby.zip
 
 # Add services to runit
