@@ -1,4 +1,4 @@
-docker-mediabrowser
+docker-emby
 ===================
 
-Docker container for Mediabrowser Server
+Docker container for Emby Media Server (formerly MediaBrowser)

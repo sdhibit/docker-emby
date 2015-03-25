@@ -50,16 +50,16 @@ ENV LANGUAGE        en_US.UTF-8
 # Set Locale
 RUN locale-gen $LANG
 
-# Install MediaBrowser
-RUN mkdir -p /opt/mediabrowser \
-  && wget -O /opt/mediabrowser/mediabrowser.zip https://github.com/MediaBrowser/MediaBrowser.Releases/raw/master/Server/MediaBrowser.Mono.zip \
-  && unzip /opt/mediabrowser/mediabrowser.zip -d /opt/mediabrowser \
-  && chown -R nobody:users /opt/mediabrowser \
-  && chmod -R 755 /opt/mediabrowser \
-  && rm /opt/mediabrowser/mediabrowser.zip
+# Install Emby
+RUN mkdir -p /opt/emby \
+  && wget -O /opt/emby/emby.zip https://github.com/MediaBrowser/MediaBrowser.Releases/raw/master/Server/MediaBrowser.Mono.zip \
+  && unzip /opt/emby/emby.zip -d /opt/emby \
+  && chown -R nobody:users /opt/emby \
+  && chmod -R 755 /opt/emby \
+  && rm /opt/emby/emby.zip
 
 # Add services to runit
-ADD mediabrowser.sh /etc/service/mediabrowser/run
+ADD emby.sh /etc/service/emby/run
 RUN chmod +x /etc/service/*/run
 
 #http port
