@@ -17,10 +17,9 @@ RUN add-apt-repository ppa:mc3man/trusty-media \
 RUN apt-get update && apt-get install --no-install-recommends -y \
   ca-certificates \
   ffmpeg \
-  libgdiplus \
+  imagemagick \
   libmono-cil-dev \
   libsqlite3-dev \
-  libwebp-dev \
   locales \
   mediainfo \
   mono-devel \
