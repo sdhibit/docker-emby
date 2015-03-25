@@ -60,7 +60,7 @@ RUN mkdir -p /opt/emby \
   && chown -R nobody:users /opt/emby \
   && chmod -R 755 /opt/emby \
   && chown -R nobody:users /config \
-  && chmod -R 755 /config
+  && chmod -R 755 /config \
   && rm /opt/emby/emby.zip
 
 # Add services to runit
