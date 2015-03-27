@@ -15,11 +15,14 @@ RUN add-apt-repository ppa:mc3man/trusty-media \
 
 # Install Apt Packages
 RUN apt-get update && apt-get install --no-install-recommends -y \
+  build-essential \
   ca-certificates \
   ffmpeg \
-  imagemagick \
+  libjpeg-dev \
   libmono-cil-dev \
+  libpng12-dev \
   libsqlite3-dev \
+  libwebp-dev \
   locales \
   mediainfo \
   mono-devel \
@@ -51,6 +54,17 @@ ENV PKG_VERSION   3.0.5557.0
 
 # Set Locale
 RUN locale-gen $LANG
+
+# Download and Compile ImageMagick
+RUN mkdir -p /tmp/imagemagick \
+ && wget -O /tmp/imagemagick/ImageMagick.tar.gz http://www.imagemagick.org/download/ImageMagick.tar.gz \
+ && tar -xvf /tmp/imagemagick/ImageMagick.tar.gz --strip-components=1 \
+ && cd /tmp/imagemagick \
+ && ./configure \
+ && make \
+ && make install \
+ && ldconfig \
+ && rm -rf /tmp/* 
 
 # Install Emby
 RUN mkdir -p /opt/emby \
