@@ -58,7 +58,7 @@ RUN locale-gen $LANG
 # Download and Compile ImageMagick
 RUN mkdir -p /tmp/imagemagick \
  && wget -O /tmp/imagemagick/ImageMagick.tar.gz http://www.imagemagick.org/download/ImageMagick.tar.gz \
- && tar -xvf /tmp/imagemagick/ImageMagick.tar.gz --strip-components=1 \
+ && tar -xvf /tmp/imagemagick/ImageMagick.tar.gz -C /tmp/imagemagick --strip-components=1 \
  && cd /tmp/imagemagick \
  && ./configure \
  && make \
