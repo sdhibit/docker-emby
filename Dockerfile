@@ -15,11 +15,14 @@ RUN add-apt-repository ppa:mc3man/trusty-media \
 
 # Install Apt Packages
 RUN apt-get update && apt-get install --no-install-recommends -y \
+  build-essential \
   ca-certificates \
   ffmpeg \
-  imagemagick \
+  libjpeg-dev \
   libmono-cil-dev \
+  libpng12-dev \
   libsqlite3-dev \
+  libwebp-dev \
   locales \
   mediainfo \
   mono-devel \
@@ -38,7 +41,6 @@ RUN apt-get update && apt-get install --no-install-recommends -y \
   && (( find /usr/share/doc -depth -type f ! -name copyright|xargs rm || true )) \
   && (( find /usr/share/doc -empty|xargs rmdir || true )) 
 
-
 # Set correct environment variables
 ENV DEBIAN_FRONTEND noninteractive
 ENV HOME            /root
@@ -49,16 +51,26 @@ ENV LANGUAGE        en_US.UTF-8
 # Set Locale
 RUN locale-gen $LANG
 
+RUN mkdir -p /tmp/imagemagick \
+ && wget -O /tmp/imagemagick/ImageMagick.tar.gz http://www.imagemagick.org/download/ImageMagick.tar.gz \
+ && tar -xvf /tmp/imagemagick/ImageMagick.tar.gz -C /tmp/imagemagick --strip-components=1 \
+ && cd /tmp/imagemagick \
+ && ./configure \
+ && make \
+ && make install \
+ && ldconfig \
+ && rm -rf /tmp/* 
+
 # Install Emby
 RUN mkdir -p /opt/emby \
-  && mkdir -p /config \
-  && wget -O /opt/emby/emby.zip https://github.com/MediaBrowser/MediaBrowser.Releases/raw/master/Server/MediaBrowser.Mono.zip \
-  && unzip /opt/emby/emby.zip -d /opt/emby \
-  && chown -R nobody:users /opt/emby \
-  && chmod -R 755 /opt/emby \
-  && chown -R nobody:users /config \
+ && mkdir -p /config \
+ && wget -O /opt/emby/emby.zip https://github.com/MediaBrowser/MediaBrowser.Releases/raw/master/Server/MediaBrowser.Mono.zip \
+ && unzip /opt/emby/emby.zip -d /opt/emby \
+ && chown -R nobody:users /opt/emby \
+ && chmod -R 755 /opt/emby \
+ && chown -R nobody:users /config \
  && chmod -R 755 /config \
-  && rm /opt/emby/emby.zip
+ && rm /opt/emby/emby.zip
 
 # Add services to runit
 ADD emby.sh /etc/service/emby/run
