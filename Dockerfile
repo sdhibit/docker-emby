@@ -51,6 +51,7 @@ ENV LANGUAGE        en_US.UTF-8
 # Set Locale
 RUN locale-gen $LANG
 
+# Download and compile ImageMagick
 RUN mkdir -p /tmp/imagemagick \
  && wget -O /tmp/imagemagick/ImageMagick.tar.gz http://www.imagemagick.org/download/ImageMagick.tar.gz \
  && tar -xvf /tmp/imagemagick/ImageMagick.tar.gz -C /tmp/imagemagick --strip-components=1 \
