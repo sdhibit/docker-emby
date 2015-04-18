@@ -50,7 +50,7 @@ ENV LANG            en_US.UTF-8
 ENV LANGUAGE        en_US.UTF-8
 
 ENV PKG_NAME      MediaBrowser
-ENV PKG_VERSION   3.0.5582.0
+ENV PKG_VERSION   3.0.5582.4
 
 # Set Locale
 RUN locale-gen $LANG
