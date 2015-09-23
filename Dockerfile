@@ -65,7 +65,7 @@ RUN mkdir -p /tmp/imagemagick \
 # Install Emby
 RUN mkdir -p /opt/emby \
  && mkdir -p /config \
- && wget -O /opt/emby/emby.zip https://github.com/MediaBrowser/MediaBrowser.Releases/raw/master/Server/MediaBrowser.Mono.zip \
+ && wget -O /opt/emby/emby.zip https://github.com/MediaBrowser/Emby.Releases/raw/master/Server/MediaBrowser.Mono.zip \
  && unzip /opt/emby/emby.zip -d /opt/emby \
  && chown -R nobody:users /opt/emby \
  && chmod -R 755 /opt/emby \
