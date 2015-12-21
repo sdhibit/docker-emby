@@ -49,8 +49,8 @@ ENV LC_ALL          C.UTF-8
 ENV LANG            en_US.UTF-8
 ENV LANGUAGE        en_US.UTF-8
 
-ENV PKG_NAME      MediaBrowser
-ENV PKG_VERSION   3.0.5724.5
+ENV PKG_NAME      Emby.Mono
+ENV PKG_VERSION   3.0.5781.6
 
 # Set Locale
 RUN locale-gen $LANG
@@ -60,7 +60,7 @@ RUN mkdir -p /tmp/imagemagick \
  && wget -O /tmp/imagemagick/ImageMagick.tar.gz http://www.imagemagick.org/download/ImageMagick.tar.gz \
  && tar -xvf /tmp/imagemagick/ImageMagick.tar.gz -C /tmp/imagemagick --strip-components=1 \
  && cd /tmp/imagemagick \
- && ./configure --with-quantum-depth=8 \
+ && ./configure --with-quantum-depth=8 --disable-openmp --disable-hdri \
  && make \
  && make install \
  && ldconfig /usr/local/lib \
