@@ -1,0 +1,16 @@
+version: '2'
+services:
+  emby:
+    build: .
+    ports:
+     - "8096:8096/tcp"
+     - "8920:8920/tcp"
+     - "7359:7359/udp"
+     - "1900:1900/udp"
+    volumes:
+     - emby-config:/config
+    restart: unless-stopped
+
+volumes:
+  emby-config:
+    driver: local

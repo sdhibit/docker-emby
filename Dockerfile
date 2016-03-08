@@ -1,95 +1,66 @@
-FROM phusion/baseimage:0.9.16
+FROM alpine:3.3
 MAINTAINER Steve Hibit <sdhibit@gmail.com>
 
-# Fix a Debianism of the nobody's uid being 65534
-RUN usermod -u 99 nobody
-RUN usermod -g 100 nobody
+# Add Testing Repository
+RUN echo "@testing http://dl-4.alpinelinux.org/alpine/edge/testing" >> /etc/apk/repositories
 
-# Disable SSH
-RUN rm -rf /etc/service/sshd /etc/my_init.d/00_regen_ssh_host_keys.sh
-
-# Add extra repositories
-RUN add-apt-repository ppa:mc3man/trusty-media \
-  && apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 3FA7E0328081BFF6A14DA29AA6A19B38D3D831EF \
-  && echo "deb http://download.mono-project.com/repo/debian wheezy main" | sudo tee /etc/apt/sources.list.d/mono-xamarin.list
-
-# Install Apt Packages
-RUN apt-get update && apt-get install --no-install-recommends -y \
-  build-essential \
+# Install apk packages
+RUN apk --update upgrade \
+ && apk add \
   ca-certificates \
   ffmpeg \
-  libjpeg-dev \
-  libmono-cil-dev \
-  libpng12-dev \
-  libsqlite3-dev \
-  libwebp-dev \
-  locales \
-  mediainfo \
-  mono-devel \
+  imagemagick \
+  mono@testing \
+  sqlite \
   unzip \
   wget \
-  && apt-get clean \
-  && rm -rf /var/lib/apt/lists/* \ 
-     /tmp/* \ 
-     /var/tmp/* \
-     /usr/share/man \ 
-     /usr/share/groff \ 
-     /usr/share/info \
-     /usr/share/lintian \ 
-     /usr/share/linda \ 
-     /var/cache/man \
-  && (( find /usr/share/doc -depth -type f ! -name copyright|xargs rm || true )) \
-  && (( find /usr/share/doc -empty|xargs rmdir || true )) 
+ && update-ca-certificates --fresh \
+ && rm /var/cache/apk/*
 
+# Set Emby Package Information
+ENV PKG_NAME Emby.Mono
+ENV PKG_VER 3.0
+ENV PKG_BUILD 5821.0
+ENV APP_BASEURL https://github.com/MediaBrowser/Emby.Releases/raw/master/Server
+ENV APP_PKGNAME ${PKG_NAME}-${PKG_VER}.${PKG_BUILD}.zip
+ENV APP_URL ${APP_BASEURL}/${APP_PKGNAME}
+ENV APP_PATH /opt/emby
 
-# Set correct environment variables
-ENV DEBIAN_FRONTEND noninteractive
-ENV HOME            /root
-ENV LC_ALL          C.UTF-8
-ENV LANG            en_US.UTF-8
-ENV LANGUAGE        en_US.UTF-8
+# Download & Install Emby
+RUN mkdir -p ${APP_PATH} \
+ && wget -O "${APP_PATH}/emby.zip" ${APP_URL} \ 
+ && unzip "${APP_PATH}/emby.zip" -d ${APP_PATH} \
+ && rm "${APP_PATH}/emby.zip" 
 
-ENV PKG_NAME      Emby.Mono
-ENV PKG_VERSION   3.0.5781.6
+# Link libsqlite3.so library
+#RUN ln -s /usr/lib/libsqlite3.so.0 /usr/lib/libsqlite3.so 
+# Correct sqlite and imagemagick config
+ADD config/* ${APP_PATH}/
 
-# Set Locale
-RUN locale-gen $LANG
+# Create user and change ownership
+RUN mkdir /config \
+ && addgroup -g 666 -S emby \
+ && adduser -u 666 -SHG emby emby \
+ && chown -R emby:emby \
+    ${APP_PATH} \
+    "/config"
 
-# Download and Compile ImageMagick
-RUN mkdir -p /tmp/imagemagick \
- && wget -O /tmp/imagemagick/ImageMagick.tar.gz http://www.imagemagick.org/download/ImageMagick.tar.gz \
- && tar -xvf /tmp/imagemagick/ImageMagick.tar.gz -C /tmp/imagemagick --strip-components=1 \
- && cd /tmp/imagemagick \
- && ./configure --with-quantum-depth=8 --disable-openmp --disable-hdri \
- && make \
- && make install \
- && ldconfig /usr/local/lib \
- && rm -rf /tmp/* 
+VOLUME ["/config"]
 
-# Install Emby
-RUN mkdir -p /opt/emby \
-  && mkdir -p /config \
-  && wget -O /opt/emby/emby.zip https://github.com/MediaBrowser/Emby.Releases/raw/master/Server/${PKG_NAME}-${PKG_VERSION}.zip \
-  && unzip /opt/emby/emby.zip -d /opt/emby \
-  && chown -R nobody:users /opt/emby \
-  && chmod -R 755 /opt/emby \
-  && chown -R nobody:users /config \
-  && chmod -R 755 /config \
-  && rm /opt/emby/emby.zip
-
-# Add services to runit
-ADD emby.sh /etc/service/emby/run
-RUN chmod +x /etc/service/*/run
-
-#http port
-EXPOSE 8096
-#https port
-EXPOSE 8920
+# Default MB3 HTTP/tcp server port
+EXPOSE 8096/tcp
+# Default MB3 HTTPS/tcp server port
+EXPOSE 8920/tcp
+# UDP server port
 EXPOSE 7359/udp
+# ssdp port for UPnP / DLNA discovery
 EXPOSE 1900/udp
 
-VOLUME /config
+# Add run script
+ADD emby.sh /emby.sh
+RUN chmod +x /emby.sh
 
-# Use baseimage-docker's init system
-CMD ["/sbin/my_init"]
+USER emby
+WORKDIR ${APP_PATH}
 
+CMD ["/emby.sh"]
