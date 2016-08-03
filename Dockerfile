@@ -1,4 +1,4 @@
-FROM tacojohnson/alpine-runit:3.4
+FROM sdhibit/alpine-runit:3.4
 MAINTAINER Steve Hibit <sdhibit@gmail.com>
 
 # Install apk packages
