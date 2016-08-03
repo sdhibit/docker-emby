@@ -1,8 +1,5 @@
-FROM alpine:3.3
+FROM tacojohnson/alpine-runit:3.4
 MAINTAINER Steve Hibit <sdhibit@gmail.com>
-
-# Add Testing Repository
-RUN echo "@testing http://dl-4.alpinelinux.org/alpine/edge/testing" >> /etc/apk/repositories
 
 # Install apk packages
 RUN apk --update upgrade \
@@ -20,7 +17,7 @@ RUN apk --update upgrade \
 # Set Emby Package Information
 ENV PKG_NAME Emby.Mono
 ENV PKG_VER 3.0
-ENV PKG_BUILD 5913
+ENV PKG_BUILD 6020
 ENV APP_BASEURL https://github.com/MediaBrowser/Emby/releases/download/
 ENV APP_PKGNAME ${PKG_VER}.${PKG_BUILD}/${PKG_NAME}.zip
 ENV APP_URL ${APP_BASEURL}/${APP_PKGNAME}
@@ -47,20 +44,17 @@ RUN mkdir /config \
 
 VOLUME ["/config"]
 
-# Default MB3 HTTP/tcp server port
+# Default Emby HTTP/tcp server port
 EXPOSE 8096/tcp
-# Default MB3 HTTPS/tcp server port
+# Default Emby HTTPS/tcp server port
 EXPOSE 8920/tcp
 # UDP server port
 EXPOSE 7359/udp
 # ssdp port for UPnP / DLNA discovery
 EXPOSE 1900/udp
 
-# Add run script
-ADD emby.sh /emby.sh
-RUN chmod +x /emby.sh
-
-USER emby
 WORKDIR ${APP_PATH}
 
-CMD ["/emby.sh"]
+# Add services to runit
+ADD emby.sh /etc/service/emby/run
+RUN chmod +x /etc/service/*/run
