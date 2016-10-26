@@ -1,9 +1,12 @@
 FROM sdhibit/alpine-runit:3.4
 MAINTAINER Steve Hibit <sdhibit@gmail.com>
 
+# Add Testing Repository
+RUN echo "@testing http://dl-cdn.alpinelinux.org/alpine/edge/testing" >> /etc/apk/repositories
+
 # Install apk packages
 RUN apk --update upgrade \
- && apk add \
+ && apk --no-cache add \
   ca-certificates \
   ffmpeg \
   imagemagick \
@@ -11,8 +14,7 @@ RUN apk --update upgrade \
   sqlite \
   unzip \
   wget \
- && update-ca-certificates --fresh \
- && rm /var/cache/apk/*
+ && update-ca-certificates --fresh 
 
 # Set Emby Package Information
 ENV PKG_NAME Emby.Mono
