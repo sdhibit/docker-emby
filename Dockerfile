@@ -17,7 +17,7 @@ RUN apk --update upgrade \
 # Set Emby Package Information
 ENV PKG_NAME Emby.Mono
 ENV PKG_VER 3.0
-ENV PKG_BUILD 7100
+ENV PKG_BUILD 8300
 ENV APP_BASEURL https://github.com/MediaBrowser/Emby/releases/download/
 ENV APP_PKGNAME ${PKG_VER}.${PKG_BUILD}/${PKG_NAME}.zip
 ENV APP_URL ${APP_BASEURL}/${APP_PKGNAME}
