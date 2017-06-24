@@ -1,4 +1,4 @@
-FROM sdhibit/alpine-runit:3.4
+FROM sdhibit/alpine-runit:3.6
 MAINTAINER Steve Hibit <sdhibit@gmail.com>
 
 # Add Testing Repository
@@ -11,15 +11,14 @@ RUN apk --update upgrade \
   ffmpeg \
   imagemagick \
   mono@testing \
-  sqlite \
+  sqlite-libs \
   unzip \
-  wget \
- && update-ca-certificates --fresh 
+  wget
 
 # Set Emby Package Information
 ENV PKG_NAME Emby.Mono
 ENV PKG_VER 3.2
-ENV PKG_BUILD 13.0
+ENV PKG_BUILD 20.0
 ENV APP_BASEURL https://github.com/MediaBrowser/Emby/releases/download/
 ENV APP_PKGNAME ${PKG_VER}.${PKG_BUILD}/${PKG_NAME}.zip
 ENV APP_URL ${APP_BASEURL}/${APP_PKGNAME}
@@ -32,7 +31,7 @@ RUN mkdir -p ${APP_PATH} \
  && rm "${APP_PATH}/emby.zip" 
 
 # Link libsqlite3.so library
-#RUN ln -s /usr/lib/libsqlite3.so.0 /usr/lib/libsqlite3.so 
+RUN ln -s /usr/lib/libsqlite3.so.0 /usr/lib/libsqlite3.so 
 # Correct sqlite and imagemagick config
 ADD config/* ${APP_PATH}/
 
