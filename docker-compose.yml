@@ -1,0 +1,22 @@
+version: '3'
+services:
+  emby:
+    build:
+      context: .
+      args:
+       - CONFIG_PATH='/config'
+    image: emby-dotnet
+    ports:
+     - "8096:8096/tcp"
+     - "8920:8920/tcp"
+     - "7359:7359/udp"
+     - "1900:1900/udp"
+    volumes:
+     - /etc/timezone:/etc/timezone:ro
+     - emby-config:/config
+     - /mnt/scratch:/scratch
+    restart: unless-stopped
+volumes:
+  emby-config:
+    driver: local
+    

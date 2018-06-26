@@ -1,0 +1,5 @@
+#!/usr/bin/with-contenv sh
+
+apk update && apk add --upgrade --no-cache ca-certificates
+
+update-ca-certificates

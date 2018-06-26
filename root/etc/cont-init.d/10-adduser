@@ -1,0 +1,21 @@
+#!/usr/bin/with-contenv sh
+
+PUID=${PUID:-666}
+PGID=${PGID:-666}
+
+groupmod -o -g "$PGID" appuser
+usermod -o -u "$PUID" appuser
+
+echo "
+-------------------------------------
+GID/UID
+-------------------------------------
+User uid:    $(id -u appuser)
+User gid:    $(id -g appuser)
+-------------------------------------
+"
+mkdir -p $APP_PATH
+mkdir -p $CONFIG_PATH
+
+chown -R appuser:appuser $APP_PATH
+chown -R appuser:appuser $CONFIG_PATH
