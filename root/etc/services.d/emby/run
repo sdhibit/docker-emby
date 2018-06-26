@@ -1,0 +1,8 @@
+#!/usr/bin/with-contenv sh
+
+if [ -e "${APP_PATH}" ]
+    then
+    cd ${APP_PATH}
+fi
+
+s6-setuidgid appuser dotnet EmbyServer.dll -programdata ${CONFIG_PATH} -ffmpeg /usr/bin/ffmpeg -ffprobe /usr/bin/ffprobe
